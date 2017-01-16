@@ -2,8 +2,9 @@
 The Git template for cloned Doba Repos
 
 ## What is this
-This repo provides 4 git pre-commit hooks that will run before a commit is allowed.
+This repo provides 4 git pre-commit hooks (and 1 runner hook) that will run before a commit is allowed.
 
+* **Pre-Commit Runner** - Runs the 4 main hooks (and any other approiately named pre-commit hooks)
 * **Pylint** - Runs `pylint` against the files being committed
 * **Flake8** - Runs `flake8` against the files being committed
 * **Branch Checker** - Checks if you are committed to a _protected_ branch. Asks for verification.
@@ -46,7 +47,8 @@ Alternatively you may copy the hooks locally to existing repos as you choose.
 
 ### Local setup
 1. Clone a repo of your choosing
-1. Copy each hook into the .git/hooks directory in your repo
+1. Copy the runner (pre-commit) hook into your .git/hooks directory in your repo
+1. Copy each additionaly hook you wish to use into the .git/hooks directory in your repo
 1. If you choose to use the flake8 hook, install and setup
 
     ```bash
