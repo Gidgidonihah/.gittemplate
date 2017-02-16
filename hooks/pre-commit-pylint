@@ -7,7 +7,7 @@ import sys
 from git_pylint_commit_hook.commit_hook import check_repo
 
 MIN_QUALITY = 10
-if not check_repo(limit=MIN_QUALITY, suppress_report=True):
+if not check_repo(limit=MIN_QUALITY, suppress_report=True, pylint_params='-r y'):
     print("\033[31;5;49mPylint tests failing. Commit aborted.\033[39m")
     sys.exit(1)
 else:
