@@ -1,33 +1,44 @@
 # Git Template
-The Git template for cloned Doba Repos
+The Git template for cloned Repos
 
 ## What is this
 This repo provides 4 git pre-commit hooks (and 1 runner hook) that will run before a commit is allowed.
+The hooks are written in Bash, Python, and Javascript. All hooks should exit with success if any required modules
+are not available. As the hooks are written in Python and Javascript, they will fail if Python or Node are not installed.
 
 * **Pre-Commit Runner** - Runs the 4 main hooks (and any other approiately named pre-commit hooks)
 * **Pylint** - Runs `pylint` against the files being committed
 * **Flake8** - Runs `flake8` against the files being committed
 * **Branch Checker** - Checks if you are committed to a _protected_ branch. Asks for verification.
 * **Tag Checker** - Checks for matches of a specified tag. Asks for verification.
+* **ESLint** - Runs `eslint` against any js(x)? files being committed
+* **Coverage.js** - If there are modified js files and a packge.json with a `coverage` script, prompts to run coverage
 
 ## Setup
 The git template may be cloned and used globally for all new cloned repos.
 Alternatively you may copy the hooks locally to existing repos as you choose.
 
 ### Global setup
-1. Clone the doba git_template repo
+1. Clone the git_template repo
 
     ```bash
     cd ~; # You may change this location, but note the location is referenced in commands below
-    git clone git@github.com:DobaTech/git_template.git doba_git_template;
-    cd ~/doba_git_template;
+    git clone <this_repo> .git_template;
+    cd ~/.git_template;
+    ```
+1. Optional: Install packages
+
+    ```bash
+    # The packages these hooks use could very well be installed by the requirements by the repo with which you are working.
+    # If you'd like to install them globally:
     pip install -r requirements.txt
+    npm install --save-dev eslint
     ```
 
 1. Set up the global template
 
     ```bash
-    git config --global init.templatedir '~/doba_git_template'
+    git config --global init.templatedir '~/.git_template'
     ```
 
 1. Specify the flake8 hook settings
@@ -43,7 +54,7 @@ Alternatively you may copy the hooks locally to existing repos as you choose.
     # e.g git config --add --global hooks.tagmatchpattern jweir|todo
     ```
 
-1. Clone the Doba repositories. The template will be copied to your new clone.
+1. Clone your repositories. The template will be copied to your new clone.
 
 ### Local setup
 1. Clone a repo of your choosing
@@ -70,7 +81,13 @@ Alternatively you may copy the hooks locally to existing repos as you choose.
     pip install git-pylint-commit-hook
     ```
 
-## Known Issues
-Currently there is [a bug (#291)](https://gitlab.com/pycqa/flake8/issues/291) with flake8's hook that will check all
-files that are staged for commit, rather than only the python files. In the meantime, you may turn of strict checking
-(see setup above) until the bug is fixed.
+1. If you choose to use the eslint hook, you will need to install `eslint` and any dependancies
+
+    ```bash
+    npm install --save-dev eslint # Local to project install
+    # OR
+    npm install --global eslint # Global path install
+    ```
+
+1. If you choose to use the coverage.js hook, you will need to have node installed and have a package.json with
+a `coverage` script

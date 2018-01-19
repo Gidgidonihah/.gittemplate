@@ -4,13 +4,16 @@
 
 import sys
 
-from flake8.main import git
-
-if __name__ == '__main__':
-    result = git.hook(
-        strict=git.config_for('strict'),
-        lazy=git.config_for('lazy'),
-    )
-    if result != 0:
-        print('\033[31;5;49mFlake8 test failed. Commit aborted.\033[39m')
-    sys.exit(result)
+try:
+    from flake8.main import git
+    if __name__ == '__main__':
+        result = git.hook(
+            strict=git.config_for('strict'),
+            lazy=git.config_for('lazy'),
+        )
+        if result != 0:
+            print('\033[31;5;49mFlake8 test failed. Commit aborted.\033[39m')
+        sys.exit(result)
+except ImportError:
+    print('\033[1;33;49mFlake8 import failed. Not installed in python path. Ignoring and continuing.\033[39m')
+    sys.exit(0)

@@ -1,0 +1,32 @@
+#!/bin/sh
+
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep ".jsx\{0,1\}$")
+ESLINT="$(git rev-parse --show-toplevel)/node_modules/.bin/eslint"
+
+if [[ "$STAGED_FILES" = "" ]]; then
+    exit 0
+fi
+
+PASS=true
+
+# Check for eslint
+if [[ ! -x "$ESLINT" ]]; then
+    echo "\033[1;33;49mESLint not installed (npm i --save-dev eslint). Ignoring and continuing.\033[39m"
+    exit 1
+fi
+
+for FILE in $STAGED_FILES
+do
+    git show ":$FILE" | "$ESLINT" --stdin --stdin-filename "$FILE" # we only want to lint the staged changes, not any un-staged changes
+
+    if [[ "$?" != 0 ]]; then
+        PASS=false
+    fi
+done
+
+if ! $PASS; then
+    echo "\033[31;5;49meslint test failed. Commit aborted.\033[39m"
+    exit 1
+fi
+
+exit $?
