@@ -1,0 +1,22 @@
+#!/bin/bash
+#
+# Allows us to read user input below, assigns stdin to keyboard
+exec < /dev/tty
+
+checkCoverage (){
+    while true; do
+        echo -ne "\033[38;5;57mHave you checked test and coverage? [y,n]\033[39m"; read
+        case $REPLY in
+        [Yy])
+            exit 0
+            ;;
+        [NnQq])
+            echo -e '\033[31;5;49mCommit aborted.\033[39m'
+            exit 1
+            ;;
+        esac
+    done
+}
+
+# Call our hook functions
+checkCoverage
