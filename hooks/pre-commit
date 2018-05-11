@@ -6,6 +6,11 @@
 # Based on
 # http://osdir.com/ml/git/2009-01/msg00308.html
 
+# If the env var is set to not verify, then don't verify
+if [[ -n "${GIT_NO_VERIFY}" ]]; then
+    exit 0
+fi
+
 data=$(cat)
 exitcodes=()
 hookname=`basename $0`
