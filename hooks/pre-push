@@ -1,0 +1,53 @@
+result=0
+lintconfig=${LINTCONFIG:=~/pyproject.toml}
+
+echo "Running pre-push linting"
+
+echo 🤱
+check_outdated_tools() {
+    # Run poetry show -o and check for failure
+    if ! output=$(poetry show -o 2>/dev/null); then
+        echo "⚠️   Unable to check poetry dependencies. Your dependencies may be out of date."
+        return
+    fi
+
+    # Define the tools to check
+    tools=("bandit" "black" "isort" "mypy" "pylint" "ruff")
+
+    # Check for outdated tools directly using grep
+    outdated_tools=$(echo "$output" | grep -E "^($(IFS=\|; echo "${tools[*]}")) ")
+
+    # Report results
+    if [[ -n $outdated_tools ]]; then
+        echo "⚠️   CI results may differ. The following tools are out of date:"
+        echo "$outdated_tools"
+    else
+        echo "All specified tools are up-to-date."
+    fi
+}
+check_outdated_tools
+
+echo 🦮
+ruff check --config $lintconfig .
+if [ $? -gt 0 ]; then result=1; fi
+
+echo 🕵️
+mypy --config-file $lintconfig .
+if [ $? -gt 0 ]; then result=1; fi
+
+echo 👓
+isort --check --sp $lintconfig --src . .
+if [ $? -gt 0 ]; then result=1; fi
+
+echo 🖤
+black --check --config $lintconfig .
+if [ $? -gt 0 ]; then result=1; fi
+
+echo ☁️
+pylint --rcfile=$lintconfig .
+if [ $? -gt 0 ]; then result=1; fi
+
+if [ $? -gt 0 ]; then
+    echo "🐳 Your linting has failed. Aborting push. 🐳"
+fi
+exit $result
